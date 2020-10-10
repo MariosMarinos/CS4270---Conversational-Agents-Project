@@ -3,6 +3,10 @@ package furhatos.app.mathtutor.flow
 import furhatos.app.mathtutor.nlu.*
 import furhatos.flow.kotlin.*
 
+//TODO : move the below variables to a user class in users.kt
+var questionNumber = 0
+var correctCounter = 0
+
 val Start = state(Interaction) {
     onEntry {
         random(
@@ -91,7 +95,7 @@ val Encouragement = state(Interaction) {
     }
 }
 
-val ExplanationCont : State = state(Interaction) {
+val ExplanationCont: State = state(Interaction) {
     onEntry {
         furhat.ask("Great! Let's try to compute 20% of 500. One method to calculate the percentage is by dividing the value by 100. This will give you 1% of the value. Once you have worked out the value of 1%, we simply multiply the value by the percentage you're looking for. In our example we need to divide our value of 500 by 100. This will give 5 as our answer, meaning that 5 is 1% of 500. To calculate 20% we multiply 5 by 20 to get 100. This means that 100 is the same as 20% of 500. Do you understand this?")
     }
@@ -101,7 +105,7 @@ val ExplanationCont : State = state(Interaction) {
     }
 
     onResponse<Yes> {
-        goto(Exercise)
+        goto(ExerciseIntro)
     }
 
     onResponse<No> {
@@ -114,15 +118,85 @@ val ExplanationCont : State = state(Interaction) {
 }
 
 // There should be a prettier way to do this...?
-val Loop : State = state(Interaction) {
-    onEntry{
+val Loop: State = state(Interaction) {
+    onEntry {
         goto(ExplanationCont)
     }
 }
 
-val ExerciseIntro : State = state(Interaction) {
-    onEntry{
+val ExerciseIntro: State = state(Interaction) {
+    onEntry {
         furhat.say("I'm proud of you! Let's try some exercises to practice your newly acquired skill.")
-        //goto(Exercise)
+        goto(Exercise)
+    }
+}
+
+val Exercise: State = state(Interaction) {
+    onEntry {
+        random(
+                {
+                    furhat.ask("What is 25% of 500?")
+                    questionNumber = 1
+                    goto(Check)
+                },
+                {
+                    furhat.ask("What is 3% of 200?")
+                    questionNumber = 2
+                    goto(Check)
+                },
+                {
+                    furhat.ask("What is 24% of 50?")
+                    questionNumber = 3
+                    goto(Check)
+                }
+        )
+    }
+}
+
+val Check: State = state(Interaction) {
+    if (questionNumber == 1) {
+        onResponse<AnswerEx1> {
+            goto(AnswerCorrect)
+        }
+        onResponse{
+            goto(AnswerWrong)
+        }
+    } else if (questionNumber == 2) {
+        onResponse<AnswerEx2> {
+            goto(AnswerCorrect)
+        }
+        onResponse{
+            goto(AnswerWrong)
+        }
+    } else if (questionNumber == 3) {
+        onResponse<AnswerEx3> {
+            goto(AnswerCorrect)
+        }
+        onResponse{
+            goto(AnswerWrong)
+        }
+    }
+}
+
+val AnswerWrong: State = state(Interaction) {
+    onEntry {
+        var answer: Int
+        when (questionNumber) {
+            1 -> { answer = 125 }
+            2 -> { answer = 6 }
+            3 -> { answer = 12 }
+            else -> { answer = -1 }
+        }
+
+        furhat.say("Unfortunately this answer is wrong. The correct answer was " + answer.toString())
+        goto(Exercise)
+    }
+}
+
+val AnswerCorrect: State = state(Interaction) {
+    onEntry {
+        furhat.say("Well done!")
+        correctCounter++
+        goto(Exercise)
     }
 }

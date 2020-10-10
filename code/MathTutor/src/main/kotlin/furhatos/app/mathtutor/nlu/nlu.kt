@@ -49,3 +49,24 @@ class DontUnderstand : Intent() {
                 "I'm lost")
     }
 }
+
+class AnswerEx1 : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf(
+                "125")
+    }
+}
+
+class AnswerEx2 : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf(
+                "6")
+    }
+}
+
+class AnswerEx3 : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf(
+                "12")
+    }
+}
