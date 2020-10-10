@@ -5,8 +5,6 @@ import furhatos.flow.kotlin.onUserLeave
 import furhatos.flow.kotlin.state
 
 import furhatos.flow.kotlin.*
-import furhatos.nlu.common.Goodbye
-import furhatos.skills.UserManager
 import furhatos.util.Language
 
 val Idle : State = state {
