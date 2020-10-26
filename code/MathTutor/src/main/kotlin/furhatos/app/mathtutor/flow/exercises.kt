@@ -1,8 +1,10 @@
 package furhatos.app.mathtutor.flow
 
+import furhatos.app.mathtutor.*
 import furhatos.app.mathtutor.mathskill
 import furhatos.app.mathtutor.nlu.DontUnderstand
 import furhatos.app.mathtutor.nlu.*
+import furhatos.app.mathtutor.score
 import furhatos.flow.kotlin.*
 import furhatos.flow.kotlin.State
 import furhatos.flow.kotlin.furhat
@@ -10,28 +12,33 @@ import furhatos.flow.kotlin.onResponse
 import furhatos.flow.kotlin.state
 import furhatos.nlu.common.DontKnow
 import furhatos.nlu.common.Number
+import java.lang.NumberFormatException
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 // Custom data class consisting of a question and answer, since Kotlin can't return a tuple.
-data class ExerciseTuple(val question: String, val answer: Float)
+data class ExerciseTuple(val question: String, val percentage : Int, val Value : Int, val answer: Int)
 
-@Suppress("DEPRECATED_IDENTITY_EQUALS")
 fun getRandomExercise(): ExerciseTuple {
     // TODO: if difficulty is easy, only give answers that results in nice integers
     val randomPercentage = (1..19).random() // random number between 1 and 19
-    val percentage : Int = randomPercentage * 5 // scale random percentage from 5 to 95
-    val randomValue : Int = (1..10).random()
-    val value : Int = randomValue * 10
-
-    val answer : Float = percentage.toFloat() / 100 * value // calculate the answer
-    if ( (answer.toInt().toFloat()) !== answer) {
-        // FurHat SDK doesn't like to interpret numbers with decimal points
-        print("answer is not an integer, get new example")
-        getRandomExercise()
-    }
-
+    val percentage: Int = randomPercentage * 5 // scale random percentage from 5 to 95
+    val randomValue: Int = (1..10).random()
+    val value: Int = randomValue * 10 // scale to value between 10 and 100
+    val answerTemp: BigDecimal = (percentage.toBigDecimal().divide(BigDecimal(100)).multiply(value.toBigDecimal())) // calculate the answer
+    val answer: Int = answerTemp.setScale(0, RoundingMode.UP).toInt()
     val question = "What is $percentage% of $value?"
     println("$percentage% of $value is $answer")
-    return ExerciseTuple(question, answer)
+
+    // test if answer results in an integer, replace question if it doesn't
+    return try {
+        println("Exact Integer Value of " +
+                answerTemp + " is " + answerTemp.intValueExact())
+        return ExerciseTuple(question, percentage, value, answer)
+    } catch (e: ArithmeticException) {
+        println("answer does not end with a 0, replace question")
+        getRandomExercise()
+    }
 }
 
 
