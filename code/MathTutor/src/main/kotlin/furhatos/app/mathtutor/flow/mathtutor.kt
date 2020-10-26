@@ -92,14 +92,17 @@ val Explanation2 = state(Interaction) {
 
 val Encouragement = state(Interaction) {
     onEntry {
-        random(
-                furhat.say("Try to focus hard on the next part. I know you can do it!"),
-                furhat.say("Let's back up a little bit, I'm sure you will see the light."),
-                furhat.say("Alright, don't be frustrated if you don't get it the first time, let's try that again.")
-                // etc...
-        )
+        furhat.say {
+            random {
+                + "Try to focus hard on the next part. I know you can do it!"
+                + "Let's back up a little bit, I'm sure you will see the light."
+                + "Alright, don't be frustrated if you don't get it the first time, let's try that again."
+            }
+        }
         terminate()
-    //    goto(Explanation1)
+    }
+    onExit {
+        println("Leaving EncouragementState")
     }
 }
 
