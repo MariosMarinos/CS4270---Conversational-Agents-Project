@@ -133,9 +133,19 @@ fun exerciseExplanation(percentage : Int, value: Int)  = state {
 }
 
 
-fun exerciseSummary(score : Int) : State = state {
-    println("give a summary")
+val ExerciseSummary : State = state {
+    println("now in ExerciseSummary state")
     onEntry {
+        val score = users.current.score
+        furhat.say("You worked hard today")
         furhat.say("You answered $score questions correct")
+        furhat.say("Well done!")
+        delay (1000)
+        // TODO: ask about other math skill
+        furhat.ask("Do you want to practice some more?")
+        // TODO: clear stats for user
+
     }
+    onResponse<No> { goto(Goodbye) }
+    onResponse<Yes> { goto(AskExercise) }
 }
