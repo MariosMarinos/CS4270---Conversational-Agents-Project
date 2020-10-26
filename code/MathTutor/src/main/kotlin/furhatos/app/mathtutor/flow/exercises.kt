@@ -1,18 +1,14 @@
 package furhatos.app.mathtutor.flow
 
-import furhatos.app.mathtutor.*
-import furhatos.app.mathtutor.mathskill
-import furhatos.app.mathtutor.nlu.DontUnderstand
-import furhatos.app.mathtutor.nlu.*
+import furhatos.app.mathtutor.isAnsweringExercise
+import furhatos.app.mathtutor.nlu.Help
+import furhatos.app.mathtutor.nlu.No
+import furhatos.app.mathtutor.nlu.Stop
+import furhatos.app.mathtutor.nlu.Yes
 import furhatos.app.mathtutor.score
 import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.State
-import furhatos.flow.kotlin.furhat
-import furhatos.flow.kotlin.onResponse
-import furhatos.flow.kotlin.state
 import furhatos.nlu.common.DontKnow
 import furhatos.nlu.common.Number
-import java.lang.NumberFormatException
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -43,14 +39,13 @@ fun getRandomExercise(): ExerciseTuple {
 
 
 val AskExercise: State = state(Interaction) {
-    var failedAttempts = 0
     var (question, percentage, value, answer) = getRandomExercise()
     onEntry {
         var score = users.current.score
-        if (score > 5) { goto(exerciseSummary(score)) }
-
-
-        failedAttempts = 0
+        if (score != 0 && score % 5 == 0) { // ask for a break every 5 questions
+            furhat.say("You've been practising for a while now.")
+            call(requestBreak)
+        }
         users.current.isAnsweringExercise = true
         val response = furhat.askFor<Number>(question) {
             onResponse<DontKnow> {
@@ -62,6 +57,7 @@ val AskExercise: State = state(Interaction) {
                 call(exerciseExplanation(percentage, value))
                 reentry()
             }
+            onResponse<Stop> { goto(ExerciseSummary) }
         }
 
         // Try to catch responses where numbers are interpreted as text or where parser is confused
@@ -98,7 +94,6 @@ val AskExercise: State = state(Interaction) {
             value = newV
             answer = newA
             reentry()
-
         }
         else {
             //TODO: Give user chance to try again?
@@ -114,27 +109,6 @@ val AskExercise: State = state(Interaction) {
             answer = newA
         }
     }
-
-
-    /* If we get a response that doesn't map to any alternative or any of the above handlers,
-        we track how many times this has happened in a row and give them two more attempts and
-        finally moving on if we still don't get it.
-     */
-    onResponse {
-        failedAttempts++
-        when (failedAttempts) {
-            1 -> furhat.ask("I didn't get that, sorry. Try again!")
-            2 -> {
-                furhat.say("Sorry, I still didn't get that")
-            }
-            else -> {
-                furhat.say("Still couldn't get that. Let's try a new question")
-                reentry()
-            }
-        }
-    }
-
-
 }
 
 

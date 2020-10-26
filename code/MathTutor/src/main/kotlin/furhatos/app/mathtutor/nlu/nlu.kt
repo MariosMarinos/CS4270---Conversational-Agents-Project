@@ -37,7 +37,9 @@ class No : Intent() {
                 "No",
                 "No thanks",
                 "Nope",
-                "I'm good")
+                "I'm good",
+                "I want to continue",
+                "Continue")
     }
 }
 
@@ -65,23 +67,17 @@ class Help : Intent() {
     }
 }
 
-class AnswerEx1 : Intent() {
+// This intent is used when users have enough of exercising,
+class Stop : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf(
-                "125")
-    }
-}
-
-class AnswerEx2 : Intent() {
-    override fun getExamples(lang: Language): List<String> {
-        return listOf(
-                "6")
-    }
-}
-
-class AnswerEx3 : Intent() {
-    override fun getExamples(lang: Language): List<String> {
-        return listOf(
-                "12")
+                "I'm done",
+                "I want to quit",
+                "I've had enough",
+                "I've practised enough",
+                "Let's take a break",
+                "I need a break",
+                "I want a break",
+                "Stop")
     }
 }
