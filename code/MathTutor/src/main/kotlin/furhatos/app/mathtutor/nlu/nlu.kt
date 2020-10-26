@@ -7,7 +7,8 @@ class ShowInterest : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf(
                 "I would like to learn more about percentages",
-                "Can you teach me how to calculate percentages?")
+                "Can you teach me how to calculate percentages?",
+                "percentages")
     }
 }
 
@@ -46,7 +47,21 @@ class DontUnderstand : Intent() {
                 "Huh?",
                 "What?",
                 "I don't understand",
+                "I'm confused",
                 "I'm lost")
+    }
+}
+
+class Help : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf(
+                "I need some help",
+                "I want some help",
+                "Can I get some help",
+                "Help",
+                "Can you explain it to me?",
+                "Can I get an explanation?",
+                "Explanation")
     }
 }
 
