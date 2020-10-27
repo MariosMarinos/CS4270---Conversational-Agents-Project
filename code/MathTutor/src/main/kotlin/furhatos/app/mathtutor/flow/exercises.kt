@@ -11,6 +11,12 @@ import java.math.RoundingMode
 // Custom data class consisting of a question and answer, since Kotlin can't return a tuple.
 data class ExerciseTuple(val question: String, val percentage : Int, val Value : Int, val answer: Int)
 
+val ExerciseIntro: State = state(Interaction) {
+    onEntry {
+        furhat.say("Great! Let's try some exercises to practice your newly acquired skill.")
+        goto(AskExercise)
+    }
+}
 
 val AskExercise: State = state(Interaction) {
     var (question, percentage, value, answer) = getRandomExercise()

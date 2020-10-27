@@ -52,7 +52,8 @@ val Explanation1: State = state(Interaction) {
         })
     }
 
-    onResponse<Yes> { goto(ExerciseIntro) }
+    onResponse<Yes> { goto(ExplanationExample) }
+    onResponse<Repeat> { reentry() }
     onResponse<No> { goto(Explanation2) }
     onResponse<DontUnderstand> { goto(Explanation2) }
 }
@@ -60,11 +61,11 @@ val Explanation1: State = state(Interaction) {
 
 val Explanation2 = state(Interaction) {
     onEntry {
-        furhat.ask("A percentage is nothing more than a ${furhat.voice.emphasis("ratio")} " +
+        furhat.ask("A percentage is nothing more than a ratio" +
                 "expressed as a fraction of 100. Do you understand this so far?")
     }
 
-    onResponse<Yes> { goto(ExplanationCont) }
+    onResponse<Yes> { goto(ExplanationExample) }
     onResponse<No> { goto(Encouragement) }
     onResponse<DontUnderstand> { goto(Encouragement) }
 }
@@ -84,42 +85,36 @@ val Encouragement = state(Interaction) {
 }
 
 
-val ExplanationCont: State = state(Interaction) {
+val ExplanationExample: State = state(Interaction) {
     onEntry {
-        furhat.ask("Great! Let's try to compute 20% of 500. " +
+        furhat.say("Let's work through an example together")
+        furhat.say("Let's try to compute 20% of 500. " +
                 "One method to calculate the percentage is by dividing the value by 100. " +
                 "This will give you 1% of the value. Once you have worked out the value of 1%, " +
                 "we simply multiply the value by the percentage you're looking for. " +
                 "In our example we need to divide our value of 500 by 100. " +
                 "This will give 5 as our answer, meaning that 5 is 1% of 500. " +
                 "To calculate 20% we multiply 5 by 20 to get 100. " +
-                "This means that 100 is the same as 20% of 500. Do you understand this?")
+                "This means that 100 is the same as 20% of 500. ")
+        furhat.ask("Do you understand this?")
     }
 
     onReentry {
-        furhat.ask("Another method to calculate the percentage is to shift the comma of the percentage two places to the left. For example, 50% will become 0.5 and 1% will become 0.01. We can then multiply our value by this decimal. In our example, we can multiply 500 by 0.20. This will give 100, which is thus 20% of 500. Is this clear?")
+        furhat.say("Another method to calculate the percentage is to shift the comma of the percentage two places to the left. " +
+                "For example, 50% will become 0.5 and 1% will become 0.01. " +
+                "We can then multiply our value by this decimal. " +
+                "In our example, we can multiply 500 by 0.20. This will give 100, which is thus 20% of 500.")
+        furhat.ask("Is this clear?")
     }
 
     onResponse<Yes> { goto(ExerciseIntro) }
-    onResponse<No> { goto(Loop) }
-    onResponse<DontUnderstand> { goto(Loop) }
+    onResponse<No> { reentry() }
+    onResponse<Repeat> { reentry() }
+    onResponse<DontUnderstand> { reentry() }
 }
 
 
-// There should be a prettier way to do this...?
-val Loop: State = state(Interaction) {
-    onEntry {
-        goto(ExplanationCont)
-    }
-}
 
-
-val ExerciseIntro: State = state(Interaction) {
-    onEntry {
-        furhat.say("Great! Let's try some exercises to practice your newly acquired skill.")
-        goto(AskExercise)
-    }
-}
 
 
 // Ask user if he wants to stop
@@ -144,6 +139,7 @@ val requestBreak : State = state(Interaction) {
 }
 
 val Goodbye : State = state(Interaction) {
+    // TODO: wave user goodbye
     onEntry {
         furhat.say {
             random {
@@ -152,5 +148,6 @@ val Goodbye : State = state(Interaction) {
                 + "Goodbye"
             }
         }
+        goto(Idle)
     }
 }
