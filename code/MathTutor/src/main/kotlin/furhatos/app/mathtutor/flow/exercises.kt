@@ -11,28 +11,6 @@ import java.math.RoundingMode
 // Custom data class consisting of a question and answer, since Kotlin can't return a tuple.
 data class ExerciseTuple(val question: String, val percentage : Int, val Value : Int, val answer: Int)
 
-fun getRandomExercise(): ExerciseTuple {
-    // TODO: if difficulty is easy, only give answers that results in nice integers
-    val randomPercentage = (1..19).random() // random number between 1 and 19
-    val percentage: Int = randomPercentage * 5 // scale random percentage from 5 to 95
-    val randomValue: Int = (1..10).random()
-    val value: Int = randomValue * 10 // scale to value between 10 and 100
-    val answerTemp: BigDecimal = (percentage.toBigDecimal().divide(BigDecimal(100)).multiply(value.toBigDecimal())) // calculate the answer
-    val answer: Int = answerTemp.setScale(0, RoundingMode.UP).toInt()
-    val question = "What is $percentage% of $value?"
-    println("$percentage% of $value is $answer")
-
-    // test if answer results in an integer, replace question if it doesn't
-    return try {
-        println("Exact Integer Value of " +
-                answerTemp + " is " + answerTemp.intValueExact())
-        return ExerciseTuple(question, percentage, value, answer)
-    } catch (e: ArithmeticException) {
-        println("answer does not end with a 0, replace question")
-        getRandomExercise()
-    }
-}
-
 
 val AskExercise: State = state(Interaction) {
     var (question, percentage, value, answer) = getRandomExercise()
@@ -42,7 +20,7 @@ val AskExercise: State = state(Interaction) {
             furhat.say("You've been practising for a while now.")
             call(requestBreak)
         }
-        users.current.isAnsweringExercise = true
+
         val response = furhat.askFor<Number>(question) {
             onResponse<DontUnderstand> {
                 call(Encouragement)
@@ -64,6 +42,7 @@ val AskExercise: State = state(Interaction) {
 
         // Try to catch responses where numbers are interpreted as text or where parser is confused
         // ex: "That's a tough one, I think it's 32" (exception on 'one')
+        // TODO: make grammar for numbers of 1 to 10, these always get interpreted as text by stt
         try {
             response?.toText()?.toInt()
         }
@@ -72,7 +51,8 @@ val AskExercise: State = state(Interaction) {
             furhat.say("Could you please repeat your answer?")
             reentry()
         }
-
+        // if we make it this far, we know the question will be asked, update counter
+        users.current.questionsAsked++
         // to check with answer(Int) we need to cask our response(Number) to response(Int).
         val parsedResponse = response?.toText()?.toInt()
         if (parsedResponse == answer) {
@@ -87,8 +67,6 @@ val AskExercise: State = state(Interaction) {
                     +"Well done!"
                 }
             }
-            users.current.isAnsweringExercise = false
-
             // get new question and re-enter state
             val (newQ, newP, newV, newA) = getRandomExercise()
             question = newQ
@@ -98,11 +76,9 @@ val AskExercise: State = state(Interaction) {
             reentry()
         }
         else {
-            //TODO: Give user chance to try again?
+            // TODO: Give user another try at the answer?
             println("user gave wrong answer")
             furhat.say("Unfortunately this answer is wrong. The correct answer was $answer")
-            users.current.isAnsweringExercise = false
-
             // get new question and re-enter state
             val (newQ, newP, newV, newA) = getRandomExercise()
             question = newQ
@@ -140,15 +116,42 @@ val ExerciseSummary : State = state {
     println("now in ExerciseSummary state")
     onEntry {
         val score = users.current.score
+        val questionsAsked = users.current.questionsAsked
         furhat.say("You worked hard today")
-        furhat.say("You answered $score questions correct")
+        furhat.say("You answered $score out of $questionsAsked correct")
         furhat.say("Well done!")
-        delay (1000)
+        delay (900)
         // TODO: ask about other math skill
         furhat.ask("Do you want to practice some more?")
-        // TODO: clear stats for user
 
     }
     onResponse<No> { goto(Goodbye) }
     onResponse<Yes> { goto(AskExercise) }
+
+    // reset user stats when leaving summary
+    onExit {
+        users.current.score = 0
+        users.current.questionsAsked = 0 }
+}
+
+// Generates a question using a random percentage between 5 and 95, and a value between 10 and 100
+fun getRandomExercise(): ExerciseTuple {
+    // TODO: if difficulty is easy, only give answers that results in nice integers
+    val randomPercentage = (1..19).random() // random number between 1 and 19
+    val percentage: Int = randomPercentage * 5 // scale random percentage from 5 to 95
+    val randomValue: Int = (1..10).random()
+    val value: Int = randomValue * 10 // scale to value between 10 and 100
+    val answerTemp: BigDecimal = (percentage.toBigDecimal().divide(BigDecimal(100)).multiply(value.toBigDecimal())) // calculate the answer
+    val answer: Int = answerTemp.setScale(0, RoundingMode.UP).toInt()
+    val question = "What is $percentage% of $value?"
+    println("$percentage% of $value is $answer")
+
+    // test if answer results in an integer, replace question if it doesn't
+    return try {
+        answerTemp.intValueExact()
+        return ExerciseTuple(question, percentage, value, answer)
+    } catch (e: ArithmeticException) {
+        println("answer does not end with a 0, replace question")
+        getRandomExercise()
+    }
 }
