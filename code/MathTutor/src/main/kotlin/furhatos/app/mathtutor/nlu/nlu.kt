@@ -27,6 +27,7 @@ class Yes : Intent() {
                 "Yes",
                 "Sure",
                 "Yeah",
+                "Okay",
                 "Yes, please")
     }
 }
@@ -79,5 +80,14 @@ class Stop : Intent() {
                 "I need a break",
                 "I want a break",
                 "Stop")
+    }
+}
+
+class Repeat : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf(
+                "Could you repeat that?",
+                "Repeat",
+                "Explain again")
     }
 }

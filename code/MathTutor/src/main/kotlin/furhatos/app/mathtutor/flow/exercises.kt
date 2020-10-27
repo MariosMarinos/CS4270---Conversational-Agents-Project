@@ -1,13 +1,9 @@
 package furhatos.app.mathtutor.flow
 
-import furhatos.app.mathtutor.isAnsweringExercise
-import furhatos.app.mathtutor.nlu.Help
-import furhatos.app.mathtutor.nlu.No
-import furhatos.app.mathtutor.nlu.Stop
-import furhatos.app.mathtutor.nlu.Yes
+import furhatos.app.mathtutor.nlu.*
+import furhatos.app.mathtutor.questionsAsked
 import furhatos.app.mathtutor.score
 import furhatos.flow.kotlin.*
-import furhatos.nlu.common.DontKnow
 import furhatos.nlu.common.Number
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -48,12 +44,18 @@ val AskExercise: State = state(Interaction) {
         }
         users.current.isAnsweringExercise = true
         val response = furhat.askFor<Number>(question) {
-            onResponse<DontKnow> {
+            onResponse<DontUnderstand> {
                 call(Encouragement)
                 reentry()
             }
             onResponse<Help> {
                 println("user requested help, starting explanation ")
+                furhat.say {
+                    random{
+                        + "Let's calculate the answer together"
+                        + "Let me guide you to the answer"
+                    }
+                }
                 call(exerciseExplanation(percentage, value))
                 reentry()
             }
@@ -107,6 +109,7 @@ val AskExercise: State = state(Interaction) {
             percentage = newP
             value = newV
             answer = newA
+            reentry()
         }
     }
 }
@@ -116,7 +119,7 @@ fun exerciseExplanation(percentage : Int, value: Int)  = state {
     onEntry {
         val percentageRemainder : Int = percentage % 10
         val percentageDividedByTen : Int = percentage / 10
-        furhat.say("Let's calculate the answer together.")
+
         furhat.say("10% of $value is the same as $value divided by 10. In our case this results in ${value/10}.")
         // TODO: adjust for other remainders than 5. Not necessary if we do not create these percentages anyway
         if (percentageRemainder > 0) {furhat.say("5% is half of 10%. 5% of $value will give a value of ${value/20}")}
@@ -128,7 +131,7 @@ fun exerciseExplanation(percentage : Int, value: Int)  = state {
     }
     onResponse<Yes> { terminate() /* go back to the question */ }
     onResponse<No> { reentry() }
-    // TODO: add response if asked for repeat
+    onResponse<Repeat> { reentry() }
     onNoResponse { terminate() }
 }
 
