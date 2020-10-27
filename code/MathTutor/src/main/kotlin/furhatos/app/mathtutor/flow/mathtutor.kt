@@ -3,41 +3,36 @@ package furhatos.app.mathtutor.flow
 import furhatos.app.mathtutor.nlu.*
 import furhatos.flow.kotlin.*
 
-//TODO : move the below variables to a user class in users.kt
-var questionNumber = 0
-var correctCounter = 0
 
 val Start = state(Interaction) {
     onEntry {
-        random(
-                { furhat.ask("Hello, how can I help you?") },
-                { furhat.ask("Hi there! How can I be of service?") }
-        )
+        furhat.ask {
+            random {
+                + "Hello, how can I help you?"
+                + "Hi there! How can I be of service?"
+            }
+        }
     }
 
-    onResponse<ShowInterest> {
-        goto(SkillIntro)
-    }
-
-    onResponse<Confused> {
-        goto(RobotIntro)
-    }
+    onResponse<ShowInterest> { goto(SkillIntro) }
+    onResponse<Confused> { goto(RobotIntro) }
 }
+
 
 val RobotIntro = state(Interaction) {
     onEntry {
-        furhat.ask("My name is Professor Euler and I can teach you everything you need to know about percentages. Would you like to learn more about percentages?")
+        furhat.ask("My name is Professor Euler and I can teach you everything you need to know about percentages. " +
+                "Would you like to learn more about percentages?")
     }
 
-    onResponse<Yes> {
-        goto(SkillIntro)
-    }
-
+    onResponse<Yes> { goto(SkillIntro) }
     onResponse<No> {
-        furhat.say("That's too bad. I'm afraid I can't help you then. Feel free to talk to me when you want to learn about it some other time")
-        goto(Idle)
+        furhat.say("That's too bad. I'm afraid I can't help you then. " +
+                "Feel free to talk to me when you want to learn about it some other time")
+        goto(Goodbye)
     }
 }
+
 
 val SkillIntro = state(Interaction) {
     onEntry {
@@ -46,157 +41,54 @@ val SkillIntro = state(Interaction) {
     }
 }
 
-val Explanation1: State = state(Interaction) {
-    onEntry {
-        furhat.ask("Percentage means 'per hundred'. You can express any value as broken up into 100 different parts, each being 1 percent. We use percentages to make calculations and comparisons between values easier. Are you with me so far?")
-    }
 
-    onResponse<Yes> {
-        ExplanationCont
-    }
-
-    onResponse<No> {
-        goto(Explanation2)
-    }
-
-    onResponse<DontUnderstand> {
-        goto(Explanation2)
-    }
-}
-
-val Explanation2 = state(Interaction) {
-    onEntry {
-        furhat.ask("A percentage is a ratio expressed as a fraction of 100. Do you understand this so far?")
-    }
-
-    onResponse<Yes> {
-        goto(ExplanationCont)
-    }
-
-    onResponse<No> {
-        goto(Encouragement)
-    }
-
-    onResponse<DontUnderstand> {
-        goto(Encouragement)
-    }
-}
 
 val Encouragement = state(Interaction) {
     onEntry {
-        random(
-                furhat.say("Try to focus hard on the next part. I know you can do it!"),
-                furhat.say("Let's back up a little bit, I'm sure you will see the light."),
-                furhat.say("Alright, don't be frustrated if you don't get it the first time, let's try that again.")
-                // etc...
-        )
-
-        goto(Explanation1)
+        furhat.say {
+            random {
+                + "Try to focus hard on the next part. I know you can do it!"
+                + "Let's back up a little bit, I'm sure you will see the light."
+                + "Alright, don't be frustrated if you don't get it the first time, let's try that again."
+            }
+        }
+        terminate()
     }
 }
 
-val ExplanationCont: State = state(Interaction) {
+
+// Ask user if he wants to stop
+val checkStop : State = state(Interaction) {
     onEntry {
-        furhat.ask("Great! Let's try to compute 20% of 500. One method to calculate the percentage is by dividing the value by 100. This will give you 1% of the value. Once you have worked out the value of 1%, we simply multiply the value by the percentage you're looking for. In our example we need to divide our value of 500 by 100. This will give 5 as our answer, meaning that 5 is 1% of 500. To calculate 20% we multiply 5 by 20 to get 100. This means that 100 is the same as 20% of 500. Do you understand this?")
+        furhat.ask("Are you sure you want to stop?")
     }
+    onResponse<Yes> { goto(ExerciseSummary) }
+    onResponse<No> { terminate() }
+}
 
-    onReentry {
-        furhat.ask("Another method to calculate the percentage is to shift the comma of the percentage two places to the left. For example, 50% will become 0.5 and 1% will become 0.01. We can then multiply our value by this decimal. In our example, we can multiply 500 by 0.20. This will give 100, which is thus 20% of 500. Is this clear?")
+
+val requestBreak : State = state(Interaction) {
+    onEntry {
+        furhat.ask("Why don't you take a break for today?")
     }
-
-    onResponse<Yes> {
-        goto(ExerciseIntro)
-    }
-
+    onResponse<Yes> { goto(ExerciseSummary) }
+    onResponse<Stop> { goto(ExerciseSummary) }
     onResponse<No> {
-        goto(Loop)
-    }
-
-    onResponse<DontUnderstand> {
-        goto(Loop)
-    }
+        furhat.say("Okay, just let me know if you want to stop.")
+        terminate() }
 }
 
-// There should be a prettier way to do this...?
-val Loop: State = state(Interaction) {
+
+val Goodbye : State = state(Interaction) {
+    // TODO: wave user goodbye
     onEntry {
-        goto(ExplanationCont)
-    }
-}
-
-val ExerciseIntro: State = state(Interaction) {
-    onEntry {
-        furhat.say("I'm proud of you! Let's try some exercises to practice your newly acquired skill.")
-        goto(Exercise)
-    }
-}
-
-val Exercise: State = state(Interaction) {
-    onEntry {
-        random(
-                {
-                    furhat.ask("What is 25% of 500?")
-                    questionNumber = 1
-                    goto(Check)
-                },
-                {
-                    furhat.ask("What is 3% of 200?")
-                    questionNumber = 2
-                    goto(Check)
-                },
-                {
-                    furhat.ask("What is 24% of 50?")
-                    questionNumber = 3
-                    goto(Check)
-                }
-        )
-    }
-}
-
-val Check: State = state(Interaction) {
-    if (questionNumber == 1) {
-        onResponse<AnswerEx1> {
-            goto(AnswerCorrect)
+        furhat.say {
+            random {
+                + "See you around"
+                + "Until next time"
+                + "Goodbye"
+            }
         }
-        onResponse{
-            goto(AnswerWrong)
-        }
-    } else if (questionNumber == 2) {
-        onResponse<AnswerEx2> {
-            goto(AnswerCorrect)
-        }
-        onResponse{
-            goto(AnswerWrong)
-        }
-    } else if (questionNumber == 3) {
-        onResponse<AnswerEx3> {
-            goto(AnswerCorrect)
-        }
-        onResponse{
-            goto(AnswerWrong)
-        }
-    }
-}
-
-val AnswerWrong: State = state(Interaction) {
-    onEntry {
-        var answer: Int
-        when (questionNumber) {
-            1 -> { answer = 125 }
-            2 -> { answer = 6 }
-            3 -> { answer = 12 }
-            else -> { answer = -1 }
-        }
-
-        furhat.say("Unfortunately this answer is wrong. The correct answer was " + answer.toString())
-        goto(Exercise)
-    }
-}
-
-val AnswerCorrect: State = state(Interaction) {
-    onEntry {
-        furhat.say("Well done!")
-        correctCounter++
-        goto(Exercise)
+        goto(Idle)
     }
 }

@@ -7,7 +7,8 @@ class ShowInterest : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf(
                 "I would like to learn more about percentages",
-                "Can you teach me how to calculate percentages?")
+                "Can you teach me how to calculate percentages?",
+                "percentages")
     }
 }
 
@@ -26,6 +27,7 @@ class Yes : Intent() {
                 "Yes",
                 "Sure",
                 "Yeah",
+                "Okay",
                 "Yes, please")
     }
 }
@@ -36,7 +38,9 @@ class No : Intent() {
                 "No",
                 "No thanks",
                 "Nope",
-                "I'm good")
+                "I'm good",
+                "I want to continue",
+                "Continue")
     }
 }
 
@@ -46,27 +50,44 @@ class DontUnderstand : Intent() {
                 "Huh?",
                 "What?",
                 "I don't understand",
+                "I'm confused",
                 "I'm lost")
     }
 }
 
-class AnswerEx1 : Intent() {
+class Help : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf(
-                "125")
+                "I need some help",
+                "I want some help",
+                "Can I get some help",
+                "Help",
+                "Can you explain it to me?",
+                "Can I get an explanation?",
+                "Explanation")
     }
 }
 
-class AnswerEx2 : Intent() {
+// This intent is used when users have enough of exercising,
+class Stop : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf(
-                "6")
+                "I'm done",
+                "I want to quit",
+                "I've had enough",
+                "I've practised enough",
+                "Let's take a break",
+                "I need a break",
+                "I want a break",
+                "Stop")
     }
 }
 
-class AnswerEx3 : Intent() {
+class Repeat : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf(
-                "12")
+                "Could you repeat that?",
+                "Repeat",
+                "Explain again")
     }
 }

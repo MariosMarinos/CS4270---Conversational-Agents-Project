@@ -5,6 +5,7 @@ import furhatos.flow.kotlin.onUserLeave
 import furhatos.flow.kotlin.state
 
 import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.voice.PollyNeuralVoice
 import furhatos.util.Language
 
 val Idle : State = state {
@@ -18,7 +19,8 @@ val Idle : State = state {
      */
     init {
         furhat.setTexture("male")
-        furhat.setVoice(Language.ENGLISH_US, "Matthew")
+        furhat.voice = PollyNeuralVoice.Matthew()
+//        furhat.setVoice(Language.ENGLISH_US, "Matthew")
         if (users.count > 0) {
             furhat.attend(users.random)
             goto(Start)
