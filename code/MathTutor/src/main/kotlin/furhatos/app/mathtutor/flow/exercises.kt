@@ -49,18 +49,34 @@ val AskExercise: State = state(Interaction) {
         // Try to catch responses where numbers are interpreted as text or where parser is confused
         // ex: "That's a tough one, I think it's 32" (exception on 'one')
         // TODO: make grammar for numbers of 1 to 10, these always get interpreted as text by stt
+        var parsedResponse: Int?
         try {
-            response?.toText()?.toInt()
+            parsedResponse = response?.toText()?.toInt()
         }
-        catch (e: NumberFormatException) {
-            println("couldn't parse number out of response")
-            furhat.say("Could you please repeat your answer?")
-            reentry()
+        catch (e: Exception) {
+            val temp = response?.toText().toString()
+            when (temp) {
+                "one" -> parsedResponse = 1
+                "two" -> parsedResponse = 2
+                "three" -> parsedResponse = 3
+                "four" -> parsedResponse = 4
+                "five" -> parsedResponse = 5
+                "six" -> parsedResponse = 6
+                "seven" -> parsedResponse = 7
+                "eight" -> parsedResponse = 8
+                "nine" -> parsedResponse = 9
+                "ten" -> parsedResponse = 10
+                else -> {
+                    println("couldn't parse number out of response")
+                    furhat.say("Could you please repeat your answer?")
+                    reentry()
+                }
+            }
         }
         // if we make it this far, we know the question will be asked, update counter
         users.current.questionsAsked++
         // to check with answer(Int) we need to cask our response(Number) to response(Int).
-        val parsedResponse = response?.toText()?.toInt()
+        //val parsedResponse = response?.toText()?.toInt()
         if (parsedResponse == answer) {
             println("answer correct")
             users.current.score++
