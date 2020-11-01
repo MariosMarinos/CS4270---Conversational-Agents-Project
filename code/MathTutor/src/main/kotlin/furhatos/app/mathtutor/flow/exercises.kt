@@ -13,7 +13,9 @@ data class ExerciseTuple(val question: String, val percentage : Int, val Value :
 
 val ExerciseIntro: State = state(Interaction) {
     onEntry {
+        furhat.gesture(indefiniteBigSmile)
         furhat.say("Great! Let's try some exercises to practice your newly acquired skill.")
+        furhat.gesture(indefiniteSmile)
         goto(AskExercise)
     }
 }
@@ -21,12 +23,15 @@ val ExerciseIntro: State = state(Interaction) {
 val AskExercise: State = state(Interaction) {
     var (question, percentage, value, answer) = getRandomExercise()
     onEntry {
+        furhat.gesture(indefiniteSmile)
         var score = users.current.score
         if (score != 0 && score % 5 == 0) { // ask for a break every 5 questions
             furhat.say("You've been practising for a while now.")
             call(requestBreak)
         }
-
+        furhat.attend(randomLookAway())
+        delay(1000)
+        furhat.attend(users.current)
         val response = furhat.askFor<Number>(question) {
             onResponse<DontUnderstand> {
                 call(Encouragement)
@@ -34,6 +39,7 @@ val AskExercise: State = state(Interaction) {
             }
             onResponse<Help> {
                 println("user requested help, starting explanation ")
+                //TODO nod at user? requires get location of user which i cant find
                 furhat.say {
                     random{
                         + "Let's calculate the answer together"
@@ -82,6 +88,8 @@ val AskExercise: State = state(Interaction) {
             users.current.score++
             score = users.current.score
             println("updated score is $score")
+            //TODO nod at user here too? requires get location of user which i cant find
+            furhat.gesture(indefiniteBigSmile)
             furhat.say {
                 random {
                     +"Correct!"
@@ -100,6 +108,7 @@ val AskExercise: State = state(Interaction) {
         else {
             // TODO: Give user another try at the answer?
             println("user gave wrong answer")
+            furhat.gesture(stopSmile)
             furhat.say("Unfortunately this answer is wrong. The correct answer was $answer")
             // get new question and re-enter state
             val (newQ, newP, newV, newA) = getRandomExercise()

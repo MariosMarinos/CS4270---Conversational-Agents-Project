@@ -2,15 +2,21 @@ package furhatos.app.mathtutor.flow
 
 import furhatos.app.mathtutor.nlu.*
 import furhatos.flow.kotlin.*
+import furhatos.records.Location
 
 
 val Start = state(Interaction) {
     onEntry {
+        furhat.gesture(indefiniteSmile)
+
         furhat.ask {
             random {
                 + "Hello, how can I help you?"
                 + "Hi there! How can I be of service?"
             }
+            + delay(2000)
+            + behavior {
+                furhat.attend(users.current) }
         }
     }
 
@@ -82,6 +88,7 @@ val requestBreak : State = state(Interaction) {
 val Goodbye : State = state(Interaction) {
     // TODO: wave user goodbye
     onEntry {
+        furhat.gesture(indefiniteBigSmile)
         furhat.say {
             random {
                 + "See you around"
@@ -89,6 +96,8 @@ val Goodbye : State = state(Interaction) {
                 + "Goodbye"
             }
         }
+        delay(4000)
+        furhat.gesture(stopSmile)
         goto(Idle)
     }
 }
