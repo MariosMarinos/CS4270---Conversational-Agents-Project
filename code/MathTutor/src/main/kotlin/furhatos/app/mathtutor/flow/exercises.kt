@@ -23,7 +23,7 @@ val ExerciseIntro: State = state(Interaction) {
 val AskExercise: State = state(Interaction) {
     var (question, percentage, value, answer) = getRandomExercise()
     onEntry {
-        furhat.gesture(indefiniteSmile)
+        furhat.gesture(stopSmile)
         var score = users.current.score
         if (score != 0 && score % 5 == 0) { // ask for a break every 5 questions
             furhat.say("You've been practising for a while now.")

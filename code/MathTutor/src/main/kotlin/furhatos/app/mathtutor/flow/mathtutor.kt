@@ -14,7 +14,6 @@ val Start = state(Interaction) {
                 + "Hello, how can I help you?"
                 + "Hi there! How can I be of service?"
             }
-            + delay(2000)
             + behavior {
                 furhat.attend(users.current) }
         }

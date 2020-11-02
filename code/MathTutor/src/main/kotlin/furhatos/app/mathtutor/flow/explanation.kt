@@ -15,12 +15,19 @@ import java.util.*
 
 // function to generate a random location for the robot to look to when "A-gazing" (not looking at the user).
 fun randomLookAway() : Location {
-    val r1 = Random().nextDouble()
-    val r2 = Random().nextDouble()
-    val x = 6.0 * r1 - 3
-    val y = 3.5 * r2 - 1.75
-    val z = 1.5
-    return Location(x, y, z)
+    var r1 = 1.0
+    var r2 = 1.0
+    if ((0..1).random() == 1) {
+        r1 = -1.0
+    }
+    if ((0..1).random() == 1) {
+        r2 = -1.0
+    }
+//    val x = 6.0 * r1 - 3
+//    val y = 3.5 * r2 - 1.7
+//    val z = 1.5
+    println(""+r1+ ", " +r2+ ", 1.5")
+    return Location(r1, r2, 1.5)
 }
 
 val Explanation1: State = state(Interaction) {
@@ -35,7 +42,7 @@ val Explanation1: State = state(Interaction) {
             +delay(100)
             +"You can express any value as broken up into 100 different parts, each part being 1%."
             + behavior {
-                furhat.attend(randomLookAway()) }
+                furhat.attend(Location(0.0, -0.5, 1.5)) }
             +delay(250)
             +"Once you have worked out the value of 1%, "
             +"we simply multiply this value by the percentage you're looking for to get the final answer. "
@@ -67,11 +74,13 @@ val Explanation2 = state(Interaction) {
     onEntry {
         furhat.attend(randomLookAway())
         delay(1000)
-        //furhat.attend(users.current)
-        furhat.ask("A percentage is nothing more than a ratio" + behavior {
-            furhat.attend(users.current) }
-                + "expressed as a fraction of 100. So we could also write 100% as 100/100, 50% as 50/100, 1% as 1/100, " +
-                "et cetera. Do you understand this so far?")
+        furhat.say{
+                +"A percentage is nothing more than a ratio"
+                + behavior {
+                    furhat.attend(users.current) }
+                + "expressed as a fraction of 100. So we could also write 100% as 100/100, 50% as 50/100, 1% as 1/100, "
+                +"et cetera."}
+        furhat.ask("Do you understand this so far?")
     }
 
     onResponse<Yes> {
@@ -121,12 +130,13 @@ val Explanation2Example : State = state(Interaction) {
     onEntry {
         furhat.attend(randomLookAway())
         delay(2000)
-        furhat.say("Let's try to compute 20% of 500."
+        furhat.say{"Let's try to compute 20% of 500."
                 + behavior {
-                    furhat.attend(users.current) }
-                + "We start by writing 20% as 20/100. " +
-                "We can then multiply our value by this fraction to reach our final answer. " +
-                "In our example, we can multiply 500 by 20/100. This will give 100, which is thus our final answer.")
+                    furhat.attend(users.current)
+                }
+                + "We start by writing 20% as 20/100. "
+                + "We can then multiply our value by this fraction to reach our final answer. "
+                + "In our example, we can multiply 500 by 20/100. This will give 100, which is thus our final answer."}
         furhat.ask("Is this clear?")
     }
 
