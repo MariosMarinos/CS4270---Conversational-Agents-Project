@@ -1,17 +1,12 @@
-from keras.models import load_model
 import numpy as np
-import argparse
-import matplotlib.pyplot as plt
 import cv2
-import time
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import Conv2D
-from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import os
 
+"""Weights and model used by repo : https://github.com/atulapra/Emotion-detection"""
 
 def create_model(weights):
     # Create the model
@@ -37,11 +32,9 @@ def create_model(weights):
 
 
 def EmotionDetect():
-
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
     #load model weights.
-    weights = 'model.h5'
-    model = create_model(weights)
+    model = create_model('model.h5')
 
     # prevents openCL usage and unnecessary logging messages
     cv2.ocl.setUseOpenCL(False)
@@ -50,7 +43,6 @@ def EmotionDetect():
     emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
 
     cap = cv2.VideoCapture(0)
-    last_recorded_time = time.time() # this keeps track of the last time a frame was processed
     while True:
         #curr_time = time.time() # grab the current time
         # Find haar cascade to draw bounding box around face
@@ -70,24 +62,5 @@ def EmotionDetect():
             prediction = model.predict(cropped_img)
             maxindex = int(np.argmax(prediction))
             cv2.putText(frame, emotion_dict[maxindex], (x+20, y-60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
-            # get the max of the predictions and then find which emotion is on dictionary emotion_dict.
-                
+            # get the max of the predictions and then find which emotion is on dictionary emotion_dict.     
         return (emotion_dict.get(np.argmax(prediction)))
-            #    cap.release()
-            #    cv2.destroyAllWindows()
-                #return(emotion_dict.get(np.argmax(prediction)))
-                
-        cv2.imshow('Video', cv2.resize(frame,(1600,960),interpolation = cv2.INTER_CUBIC))
-            #cap.release()
-            #cv2.destroyAllWindows()
-            #return(emotion_dict.get(np.argmax(prediction)))
-            #last_recorded_time = curr_time
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-
-    cap.release()
-    cv2.destroyAllWindows()
-
-
-EmotionDetect()
