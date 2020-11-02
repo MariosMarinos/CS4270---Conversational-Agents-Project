@@ -1,5 +1,6 @@
 package furhatos.app.mathtutor.flow
 
+import furhatos.app.mathtutor.Request
 import furhatos.app.mathtutor.nlu.DontUnderstand
 import furhatos.app.mathtutor.nlu.No
 import furhatos.app.mathtutor.nlu.Repeat
@@ -34,29 +35,36 @@ val Explanation1: State = state(Interaction) {
     onEntry {
         furhat.attend(randomLookAway())
         delay(2000)
+        val response = Request()
         furhat.say {
             +"Percentage means 'per hundred'."
-            + behavior {
-                furhat.attend(users.current) }
+            +behavior {
+                furhat.attend(users.current)
+            }
             +"We use percentages to make calculations and comparisons between values easier."
             +delay(100)
             +"You can express any value as broken up into 100 different parts, each part being 1%."
-            + behavior {
-                furhat.attend(Location(0.0, -0.5, 1.5)) }
+            +behavior {
+                furhat.attend(Location(0.0, -0.5, 1.5))
+            }
             +delay(250)
             +"Once you have worked out the value of 1%, "
             +"we simply multiply this value by the percentage you're looking for to get the final answer. "
-            + behavior {
-                furhat.attend(users.current) }
+            +behavior {
+                furhat.attend(users.current)
+            }
         }
         furhat.ask("Are you with me so far?")
     }
-
     onResponse<Yes> {
+        val emotion = Request()
+        if (emotion == "Act. needed") call(EmotionSeenEncouragment)
         furhat.say("Let's work through an example together")
         goto(Explanation1Example) }
     onResponse<Repeat> {
-        furhat.say("Okay, I will repeat my explanation again.")
+        val emotion = Request()
+        if (emotion == "Act. needed") call(EmotionSeenEncouragment)
+        furhat.say("Okay now, I will repeat my explanation again.")
         reentry() }
     onResponse<No> {
         call(Encouragement)
@@ -65,6 +73,8 @@ val Explanation1: State = state(Interaction) {
         call(Encouragement)
         reentry() }
     onResponse<DontUnderstand> {
+        val emotion = Request()
+        if (emotion == "Act. needed") call(EmotionSeenEncouragment)
         furhat.say("Let's try another explanation.")
         goto(Explanation2) }
 }

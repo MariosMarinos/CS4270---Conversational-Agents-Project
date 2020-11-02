@@ -56,11 +56,13 @@ def EmotionDetect():
         faces = facecasc.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
         # NOTE: ADD SOME STATEMENTS HERE TO PROCESS YOUR IMAGE VARIABLE, img
         for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y-50), (x+w, y+h+10), (255, 0, 0), 2)
             roi_gray = gray[y:y + h, x:x + w]
             cropped_img = np.expand_dims(np.expand_dims(cv2.resize(roi_gray, (48, 48)), -1), 0)
             prediction = model.predict(cropped_img)
-            maxindex = int(np.argmax(prediction))
-            cv2.putText(frame, emotion_dict[maxindex], (x+20, y-60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
             # get the max of the predictions and then find which emotion is on dictionary emotion_dict.     
-        return (emotion_dict.get(np.argmax(prediction)))
+        # check if faces is empty or not.
+        if len(faces) != 0:
+            if prediction.size != 0:
+                return (emotion_dict.get(np.argmax(prediction)))
+        # if we don't find any face we return Neutral.
+        else: return "Neutral"

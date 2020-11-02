@@ -55,6 +55,19 @@ val Encouragement = state(Interaction) {
                 + "Try to focus hard on the next part. I know you can do it!"
                 + "Let's back up a little bit, I'm sure you will see the light."
                 + "Alright, don't be frustrated if you don't get it the first time, let's try that again."
+                + "Don't give up, keep up the good work and you will bright!"
+            }
+        }
+        terminate()
+    }
+}
+
+val EmotionSeenEncouragment = state(Interaction) {
+    onEntry {
+        furhat.say {
+            random {
+                + "I can see in your face that you might be disappointed, but don't worry you will get it eventually!"
+                + "Hey, don't be pessimistic, I can see that on your face. Let's move on."
             }
         }
         terminate()

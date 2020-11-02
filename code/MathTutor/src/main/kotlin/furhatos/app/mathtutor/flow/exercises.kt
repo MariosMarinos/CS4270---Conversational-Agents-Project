@@ -54,7 +54,6 @@ val AskExercise: State = state(Interaction) {
 
         // Try to catch responses where numbers are interpreted as text or where parser is confused
         // ex: "That's a tough one, I think it's 32" (exception on 'one')
-        // TODO: make grammar for numbers of 1 to 10, these always get interpreted as text by stt
         var parsedResponse: Int?
         try {
             parsedResponse = response?.toText()?.toInt()
