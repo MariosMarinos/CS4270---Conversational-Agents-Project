@@ -78,6 +78,7 @@ val AskExercise: State = state(Interaction) {
                 }
             }
         }
+
         // if we make it this far, we know the question will be asked, update counter
         users.current.questionsAsked++
         // to check with answer(Int) we need to cask our response(Number) to response(Int).

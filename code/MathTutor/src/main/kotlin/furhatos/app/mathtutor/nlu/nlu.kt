@@ -51,7 +51,8 @@ class DontUnderstand : Intent() {
                 "What?",
                 "I don't understand",
                 "I'm confused",
-                "I'm lost")
+                "I'm lost",
+                "Not sure whether I understood")
     }
 }
 
@@ -88,6 +89,7 @@ class Repeat : Intent() {
         return listOf(
                 "Could you repeat that?",
                 "Repeat",
-                "Explain again")
+                "Explain again",
+                "Can you rephrase that?")
     }
 }

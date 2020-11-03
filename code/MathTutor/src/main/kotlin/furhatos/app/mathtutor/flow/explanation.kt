@@ -8,7 +8,6 @@ import furhatos.app.mathtutor.nlu.Yes
 import furhatos.flow.kotlin.*
 import furhatos.nlu.common.DontKnow
 import furhatos.records.Location
-import java.util.*
 
 // TODO: add conditional for division / percentage explanation to each state in this file
 // TODO: add a user counter for how many times things has been repeated. Switch to different explanation if repeated too much
@@ -31,11 +30,18 @@ fun randomLookAway() : Location {
     return Location(r1, r2, 1.5)
 }
 
+fun callEmotion(): String {
+    val emotion = Request()
+    EmotionSeenEncouragment(emotion)
+    return emotion
+}
+
 val Explanation1: State = state(Interaction) {
     onEntry {
         furhat.attend(randomLookAway())
         delay(2000)
-        val response = Request()
+        val emotion = Request()
+        if (emotion == "Surprised") EmotionSeenEncouragment(emotion)
         furhat.say {
             +"Percentage means 'per hundred'."
             +behavior {
@@ -57,24 +63,32 @@ val Explanation1: State = state(Interaction) {
         furhat.ask("Are you with me so far?")
     }
     onResponse<Yes> {
-        val emotion = Request()
-        if (emotion == "Act. needed") call(EmotionSeenEncouragment)
-        furhat.say("Let's work through an example together")
+        furhat.say("Nice, you are on the right track! Let's work through an example together.")
         goto(Explanation1Example) }
     onResponse<Repeat> {
-        val emotion = Request()
-        if (emotion == "Act. needed") call(EmotionSeenEncouragment)
+        callEmotion()
         furhat.say("Okay now, I will repeat my explanation again.")
         reentry() }
     onResponse<No> {
+        // TODO : on No, and Don't understand, call something that is for sure encouraging or
+        // TODO : CallEmotion which risk to find happy or neutral and don't encourage eventually?
         call(Encouragement)
         reentry() }
     onResponse<DontKnow> {
-        call(Encouragement)
-        reentry() }
+        val emotion = callEmotion()
+        // if he answers Don't know but his emotion are good go to explanation and give him a good comment.
+        if (emotion == "Happy" || emotion == "Neutral")  {
+            EmotionSeenEncouragment(emotion)
+            goto(Explanation1Example)
+        }
+        reentry()
+    }
     onResponse<DontUnderstand> {
         val emotion = Request()
-        if (emotion == "Act. needed") call(EmotionSeenEncouragment)
+        if (emotion == "Happy"){
+            EmotionSeenEncouragment(emotion)
+            goto(Explanation1Example)
+        }
         furhat.say("Let's try another explanation.")
         goto(Explanation2) }
 }
@@ -83,6 +97,9 @@ val Explanation1: State = state(Interaction) {
 val Explanation2 = state(Interaction) {
     onEntry {
         furhat.attend(randomLookAway())
+        // if before explanation user is surprised, tell him to wait to see.
+        val emotion = Request()
+        if (emotion == "Surprised") EmotionSeenEncouragment(emotion)
         delay(1000)
         furhat.say{
                 +"A percentage is nothing more than a ratio"
@@ -94,9 +111,10 @@ val Explanation2 = state(Interaction) {
     }
 
     onResponse<Yes> {
-        furhat.say("Okay. Let me show you an example.")
+        furhat.say("Well done so far! Let's move on and show you an example.")
         goto(Explanation2Example) }
     onResponse<Repeat> {
+        callEmotion()
         furhat.say("Okay, I will repeat my explanation again.")
         reentry() }
     onResponse<No> {
@@ -104,8 +122,13 @@ val Explanation2 = state(Interaction) {
         reentry()}
     onResponse<DontUnderstand> {
         // TODO: Explanation loop must be handled more gracefully
+        val emotion = Request()
+        if (emotion == "Happy"){
+            EmotionSeenEncouragment(emotion)
+            goto(Explanation2Example)
+        }
         furhat.say("Let's try the first explanation again.")
-        goto(Explanation1Example) }
+        goto(Explanation1) }
 }
 
 val Explanation1Example: State = state(Interaction) {
@@ -132,6 +155,11 @@ val Explanation1Example: State = state(Interaction) {
         call(Encouragement)
         reentry() }
     onResponse<DontUnderstand> {
+        val emotion = Request()
+        if (emotion == "Happy"){
+            EmotionSeenEncouragment(emotion)
+            goto(Explanation2Example)
+        }
         furhat.say("Let's try a different explanation.")
         goto(Explanation2) }
 }
@@ -158,6 +186,11 @@ val Explanation2Example : State = state(Interaction) {
         call(Encouragement)
         reentry() }
     onResponse<DontUnderstand> {
+        val emotion = Request()
+        if (emotion == "Happy"){
+            EmotionSeenEncouragment(emotion)
+            goto(ExerciseIntro)
+        }
         furhat.say("Let's try a different explanation.")
         goto(Explanation1)
     }
