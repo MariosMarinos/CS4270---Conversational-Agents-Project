@@ -8,6 +8,8 @@ import furhatos.nlu.common.Number
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+// TODO : Use callEmotion from explanation to make the encouragments better according to emotion.
+
 // Custom data class consisting of a question and answer, since Kotlin can't return a tuple.
 data class ExerciseTuple(val question: String, val percentage : Int, val Value : Int, val answer: Int)
 
