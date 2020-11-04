@@ -8,7 +8,6 @@ import furhatos.records.Location
 val Start = state(Interaction) {
     onEntry {
         furhat.gesture(indefiniteSmile)
-        goto(Explanation1)
         furhat.ask {
             random {
                 + "Hello, how can I help you?"
