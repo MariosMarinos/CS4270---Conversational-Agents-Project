@@ -11,6 +11,6 @@ class MathTutorSkill : Skill() {
 }
 
 fun main(args: Array<String>) {
-
+    // val response = Request(), gives you Neutral, Angry.. etc
     Skill.main(args)
 }

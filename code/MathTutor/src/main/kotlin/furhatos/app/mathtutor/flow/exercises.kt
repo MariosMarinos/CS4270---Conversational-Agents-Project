@@ -10,6 +10,8 @@ import furhatos.records.Location
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+// TODO : Use callEmotion from explanation to make the encouragments better according to emotion.
+
 // Custom data class consisting of a question and answer, since Kotlin can't return a tuple.
 data class ExerciseTuple(val question: String, val percentage : Int, val Value : Int, val answer: Int)
 
@@ -56,7 +58,6 @@ val AskExercise: State = state(Interaction) {
 
         // Try to catch responses where numbers are interpreted as text or where parser is confused
         // ex: "That's a tough one, I think it's 32" (exception on 'one')
-        // TODO: make grammar for numbers of 1 to 10, these always get interpreted as text by stt
         var parsedResponse: Int?
         try {
             parsedResponse = response?.toText()?.toInt()
@@ -81,6 +82,7 @@ val AskExercise: State = state(Interaction) {
                 }
             }
         }
+
         // if we make it this far, we know the question will be asked, update counter
         users.current.questionsAsked++
         // to check with answer(Int) we need to cask our response(Number) to response(Int).

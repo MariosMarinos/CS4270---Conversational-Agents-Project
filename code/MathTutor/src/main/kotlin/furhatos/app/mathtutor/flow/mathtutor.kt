@@ -54,10 +54,47 @@ val Encouragement = state(Interaction) {
                 + "Try to focus hard on the next part. I know you can do it!"
                 + "Let's back up a little bit, I'm sure you will see the light."
                 + "Alright, don't be frustrated if you don't get it the first time, let's try that again."
+                + "Don't give up, keep up the good work and you will bright!"
             }
         }
         terminate()
     }
+}
+
+fun EmotionSeenEncouragment(emotion: String)  = state {
+    onEntry {
+        when (emotion){
+            "Angry" -> furhat.say{random {
+                    + "Don't waste your time in anger. Life is too short to be angry. Let's keep up the good work!"
+                    + "You don't need to be mad at me, we will work through this together and you will understand everything about percentages!"
+            }}
+            "Disgusted" -> furhat.say("I can see that you don't like percentages but you will see that it's very exciting eventually!")
+            "Fearful" -> furhat.say{random{
+                + "I can see the fear in your face, but we will work this out together."
+                + "There is no need to be feared, with hard work you are will make it!"
+                + "Alright, don't be frustrated if you don't get it the first time, let's try that again."
+                + "Let's back up a little bit, I'm sure you will see the light."
+            }}
+            "Happy" -> furhat.say{random {
+                +"Great, I can see that you are happy with what you've learned so far!"
+                +"Nice! You are doing pretty well. Keep it up!"
+            }}
+            "Sad" -> furhat.say{random{
+                + "Hey, don't be sad, try to focus hard on the next part. I know you can do it!"
+                + "Don't take that personally if you can't understand the maths within first time, I know you can bright!"
+                + "I can see that you are sad with this. Many people struggle with maths so don't worry about it, keep up the good work and you got this!"
+                + "Let's back up a little bit, I'm sure you will see the light."
+            }}
+            "Surprised" -> furhat.say{random{
+                + "I know that you are surprised about percentages,it's rational as you see it for first time."
+                + "Oh, I can see you are surprised. Be patient for my explanation and you will get it."
+            }}
+            // TODO : If Neutral say what? Also, neutral going to exist a lot of times because
+            // TODO : when we don't recognize faces we put neutral.
+            "Neutral" -> {terminate()}
+        }
+        terminate()
+}
 }
 
 

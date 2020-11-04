@@ -44,6 +44,7 @@ repositories {
 
 dependencies {
     compile 'com.furhatrobotics.furhatos:furhat-commons:+'
+    compile 'khttp:khttp:0.1.0'
 }
 
 //These new blocks are needed to package your project into a working skill file.
