@@ -36,7 +36,7 @@ fun callEmotion(): String {
 val Explanation1: State = state(Interaction) {
     onEntry {
         furhat.attend(randomLookAway())
-
+        furhat.voice.rate = 0.7
         delay(1000)
         val emotion = Request()
         if (emotion == "Surprised") EmotionSeenEncouragment(emotion)
@@ -58,6 +58,7 @@ val Explanation1: State = state(Interaction) {
                 furhat.attend(users.current)
             }
         }
+        furhat.voice.rate = 0.9
         furhat.ask("Are you with me so far?")
     }
     onResponse<Yes> {
@@ -98,6 +99,7 @@ val Explanation2 = state(Interaction) {
         // if before explanation user is surprised, tell him to wait to see.
         val emotion = Request()
         if (emotion == "Surprised") EmotionSeenEncouragment(emotion)
+        furhat.voice.rate = 0.7
         delay(1000)
         furhat.say{
                 +"A percentage is nothing more than a ratio"
@@ -107,6 +109,7 @@ val Explanation2 = state(Interaction) {
                 +"et cetera."
                 + behavior{furhat.attend(users.current)}
         }
+        furhat.voice.rate = 0.9
         furhat.ask("Do you understand this so far?")
     }
 
@@ -138,7 +141,8 @@ val Explanation1Example: State = state(Interaction) {
         furhat.say {
             + "Let's try to compute 20% of 500."
             + behavior {
-                furhat.attend(Location(0.0, -0.3, 1.5)) }
+                furhat.attend(Location(0.0, -0.3, 1.5))
+                furhat.voice.rate = 0.7 }
             + "We will start by calculating 1% of 500."
             + "In our example we need to divide 500 by 100 to get 1%. "
             + "This will give us 5. "
@@ -148,6 +152,7 @@ val Explanation1Example: State = state(Interaction) {
             + "So we multiply 5 by 20 to reach our final answer, which is 100."
             + behavior { furhat.attend(users.current) }
         }
+        furhat.voice.rate = 0.9
         furhat.ask("Do you understand this?")
     }
     onResponse<Yes> { goto(ExerciseIntro) }
@@ -175,6 +180,7 @@ val Explanation2Example : State = state(Interaction) {
             + "Let's try to compute 20% of 500."
             + behavior {
                 furhat.attend(Location(0.0, -0.3, 1.5))
+                furhat.voice.rate = 0.7
             }
             + "We start by writing 20% as 20/100. "
             + behavior { furhat.gesture(Gestures.GazeAway) }
@@ -183,6 +189,7 @@ val Explanation2Example : State = state(Interaction) {
             + "In our example, we can multiply 500 by 20/100. This will give 100, which is thus our final answer."
             + behavior { furhat.attend(users.current) }
         }
+        furhat.voice.rate = 0.9
         furhat.ask("Is this clear?")
     }
 
