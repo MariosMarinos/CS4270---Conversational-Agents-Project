@@ -4,7 +4,9 @@ import furhatos.app.mathtutor.nlu.*
 import furhatos.app.mathtutor.questionsAsked
 import furhatos.app.mathtutor.score
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gestures
 import furhatos.nlu.common.Number
+import furhatos.records.Location
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -23,7 +25,7 @@ val ExerciseIntro: State = state(Interaction) {
 val AskExercise: State = state(Interaction) {
     var (question, percentage, value, answer) = getRandomExercise()
     onEntry {
-        furhat.gesture(stopSmile)
+        furhat.gesture(indefiniteSmile)
         var score = users.current.score
         if (score != 0 && score % 5 == 0) { // ask for a break every 5 questions
             furhat.say("You've been practising for a while now.")
@@ -39,7 +41,7 @@ val AskExercise: State = state(Interaction) {
             }
             onResponse<Help> {
                 println("user requested help, starting explanation ")
-                //TODO nod at user? requires get location of user which i cant find
+                furhat.gesture(Gestures.Nod)
                 furhat.say {
                     random{
                         + "Let's calculate the answer together"
@@ -88,9 +90,11 @@ val AskExercise: State = state(Interaction) {
             users.current.score++
             score = users.current.score
             println("updated score is $score")
-            //TODO nod at user here too? requires get location of user which i cant find
             furhat.gesture(indefiniteBigSmile)
             furhat.say {
+                + behavior {
+                    furhat.gesture(Gestures.Nod)
+                }
                 random {
                     +"Correct!"
                     +"Good job!"
@@ -126,12 +130,15 @@ fun exerciseExplanation(percentage : Int, value: Int)  = state {
     onEntry {
         val percentageRemainder : Int = percentage % 10
         val percentageDividedByTen : Int = percentage / 10
-
+        furhat.attend(Location(0.0, -0.3, 1.5))
         furhat.say("10% of $value is the same as $value divided by 10. In our case this results in ${value/10}.")
         // TODO: adjust for other remainders than 5. Not necessary if we do not create these percentages anyway
         if (percentageRemainder > 0) {furhat.say("5% is half of 10%. 5% of $value will give a value of ${value/20}")}
         furhat.say("To get to ${percentageDividedByTen * 10}%, " +
                 "we would need to multiply ${value / 10} by $percentageDividedByTen.")
+        furhat.gesture(Gestures.GazeAway)
+        delay(400)
+        furhat.attend(users.current)
         if (percentageRemainder > 0) {furhat.say("Now we can add the remaining 5% we calculated earlier " +
                 "to come to our final answer")}
         furhat.ask("Do you know the answer to the question now?")
@@ -148,10 +155,14 @@ val ExerciseSummary : State = state {
     onEntry {
         val score = users.current.score
         val questionsAsked = users.current.questionsAsked
+        if (score > questionsAsked * 0.6){
+            furhat.gesture(indefiniteBigSmile)
+        }
         furhat.say("You worked hard today")
         furhat.say("You answered $score out of $questionsAsked correct")
         furhat.say("Well done!")
         delay (900)
+        furhat.gesture(stopSmile)
         // TODO: ask about other math skill
         furhat.ask("Do you want to practice some more?")
 
