@@ -1,5 +1,6 @@
 package furhatos.app.mathtutor.flow
 
+import furhatos.app.mathtutor.Request
 import furhatos.app.mathtutor.nlu.*
 import furhatos.app.mathtutor.questionsAsked
 import furhatos.app.mathtutor.score
@@ -41,6 +42,8 @@ val AskExercise: State = state(Interaction) {
             }
             onResponse<Help> {
                 println("user requested help, starting explanation ")
+                // call emotion encouragment.
+                callEmotion()
                 //TODO nod at user? requires get location of user which i cant find
                 furhat.say {
                     random{
@@ -87,6 +90,9 @@ val AskExercise: State = state(Interaction) {
         //val parsedResponse = response?.toText()?.toInt()
         if (parsedResponse == answer) {
             println("answer correct")
+            val emotion = Request()
+            // if the emotion is happy
+            if (emotion == "Happy") EmotionSeenEncouragment(emotion)
             users.current.score++
             score = users.current.score
             println("updated score is $score")
@@ -110,6 +116,11 @@ val AskExercise: State = state(Interaction) {
         else {
             // TODO: Give user another try at the answer?
             println("user gave wrong answer")
+            val emotion = Request()
+            // if the user is sad, fearful or surprised encourage the student.
+
+            // TODO : ask if the student want to retry the exercise.
+            if (emotion == "Sad" || emotion == "Fearful" || emotion == "Surprised") EmotionSeenEncouragment(emotion)
             furhat.gesture(stopSmile)
             furhat.say("Unfortunately this answer is wrong. The correct answer was $answer")
             // get new question and re-enter state
@@ -136,6 +147,14 @@ fun exerciseExplanation(percentage : Int, value: Int)  = state {
                 "we would need to multiply ${value / 10} by $percentageDividedByTen.")
         if (percentageRemainder > 0) {furhat.say("Now we can add the remaining 5% we calculated earlier " +
                 "to come to our final answer")}
+        // if the user is Surprised or sad after the explanation say the encouragment and ask if he want
+        // to repeat the explanation.
+        val emotion = Request()
+        if (emotion == "Surprised" || emotion == "Sad") {
+            furhat.say("I can see that you didn't understand my explanation, therefore I am going to repeat the explanation")
+            delay(1000)
+            reentry()
+        }
         furhat.ask("Do you know the answer to the question now?")
     }
     onResponse<Yes> { terminate() /* go back to the question */ }
@@ -154,9 +173,7 @@ val ExerciseSummary : State = state {
         furhat.say("You answered $score out of $questionsAsked correct")
         furhat.say("Well done!")
         delay (900)
-        // TODO: ask about other math skill
         furhat.ask("Do you want to practice some more?")
-
     }
     onResponse<No> { goto(Goodbye) }
     onResponse<Yes> { goto(AskExercise) }

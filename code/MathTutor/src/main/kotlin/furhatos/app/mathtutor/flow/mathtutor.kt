@@ -87,7 +87,7 @@ fun EmotionSeenEncouragment(emotion: String)  = state {
                 + "Let's back up a little bit, I'm sure you will see the light."
             }}
             "Surprised" -> furhat.say{random{
-                + "I know that you are surprised about percentages,it's rational as you see it for first time."
+                + "I know that you are surprised about percentages,it's rational as you see it for first time but wait for my explanation!"
                 + "Oh, I can see you are surprised. Be patient for my explanation and you will get it."
             }}
             // TODO : If Neutral say what? Also, neutral going to exist a lot of times because

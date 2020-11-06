@@ -1,5 +1,4 @@
-import cv2 
-from flask import Flask, render_template, Response
+from flask import Flask
 from emotion_detect import EmotionDetect
 
 
@@ -11,3 +10,4 @@ def video_feed():
     return EmotionDetect()
 
 app.run()
+
