@@ -2,21 +2,21 @@ package furhatos.app.mathtutor.flow
 
 import furhatos.app.mathtutor.nlu.*
 import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.voice.Voice
 import furhatos.records.Location
 
 
 val Start = state(Interaction) {
     onEntry {
         furhat.gesture(indefiniteSmile)
-
+        furhat.voice.rate = 0.9
         furhat.ask {
             random {
                 + "Hello, how can I help you?"
                 + "Hi there! How can I be of service?"
             }
-            + behavior {
-                furhat.attend(users.current) }
         }
+
     }
 
     onResponse<ShowInterest> { goto(SkillIntro) }

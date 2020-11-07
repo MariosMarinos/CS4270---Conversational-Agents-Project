@@ -5,7 +5,9 @@ import furhatos.app.mathtutor.nlu.*
 import furhatos.app.mathtutor.questionsAsked
 import furhatos.app.mathtutor.score
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gestures
 import furhatos.nlu.common.Number
+import furhatos.records.Location
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -26,7 +28,7 @@ val ExerciseIntro: State = state(Interaction) {
 val AskExercise: State = state(Interaction) {
     var (question, percentage, value, answer) = getRandomExercise()
     onEntry {
-        furhat.gesture(stopSmile)
+        furhat.gesture(indefiniteSmile)
         var score = users.current.score
         if (score != 0 && score % 5 == 0) { // ask for a break every 5 questions
             furhat.say("You've been practising for a while now.")
@@ -35,8 +37,11 @@ val AskExercise: State = state(Interaction) {
         furhat.attend(randomLookAway())
         delay(1000)
         furhat.attend(users.current)
+        furhat.voice.rate = 0.7
         val response = furhat.askFor<Number>(question) {
+
             onResponse<DontUnderstand> {
+                furhat.voice.rate = 0.9
                 call(Encouragement)
                 reentry()
             }
@@ -45,6 +50,8 @@ val AskExercise: State = state(Interaction) {
                 // call emotion encouragment.
                 callEmotion()
                 //TODO nod at user? requires get location of user which i cant find
+                furhat.voice.rate = 0.9
+                furhat.gesture(Gestures.Nod)
                 furhat.say {
                     random{
                         + "Let's calculate the answer together"
@@ -54,11 +61,13 @@ val AskExercise: State = state(Interaction) {
                 call(exerciseExplanation(percentage, value))
                 reentry()
             }
-            onResponse<Stop> { goto(ExerciseSummary) }
+            onResponse<Stop> { furhat.voice.rate = 0.9
+                goto(ExerciseSummary) }
         }
 
         // Try to catch responses where numbers are interpreted as text or where parser is confused
         // ex: "That's a tough one, I think it's 32" (exception on 'one')
+        furhat.voice.rate = 0.9
         var parsedResponse: Int?
         try {
             parsedResponse = response?.toText()?.toInt()
@@ -96,9 +105,11 @@ val AskExercise: State = state(Interaction) {
             users.current.score++
             score = users.current.score
             println("updated score is $score")
-            //TODO nod at user here too? requires get location of user which i cant find
             furhat.gesture(indefiniteBigSmile)
             furhat.say {
+                + behavior {
+                    furhat.gesture(Gestures.Nod)
+                }
                 random {
                     +"Correct!"
                     +"Good job!"
@@ -139,14 +150,19 @@ fun exerciseExplanation(percentage : Int, value: Int)  = state {
     onEntry {
         val percentageRemainder : Int = percentage % 10
         val percentageDividedByTen : Int = percentage / 10
-
+        furhat.attend(Location(0.0, -0.3, 1.5))
+        furhat.voice.rate = 0.7
         furhat.say("10% of $value is the same as $value divided by 10. In our case this results in ${value/10}.")
         // TODO: adjust for other remainders than 5. Not necessary if we do not create these percentages anyway
         if (percentageRemainder > 0) {furhat.say("5% is half of 10%. 5% of $value will give a value of ${value/20}")}
         furhat.say("To get to ${percentageDividedByTen * 10}%, " +
                 "we would need to multiply ${value / 10} by $percentageDividedByTen.")
+        furhat.gesture(Gestures.GazeAway)
+        delay(400)
+        furhat.attend(users.current)
         if (percentageRemainder > 0) {furhat.say("Now we can add the remaining 5% we calculated earlier " +
                 "to come to our final answer")}
+        furhat.voice.rate = 0.9
         // if the user is Surprised or sad after the explanation say the encouragment and ask if he want
         // to repeat the explanation.
         val emotion = Request()
@@ -169,10 +185,15 @@ val ExerciseSummary : State = state {
     onEntry {
         val score = users.current.score
         val questionsAsked = users.current.questionsAsked
+        if (score > questionsAsked * 0.6){
+            furhat.gesture(indefiniteBigSmile)
+        }
         furhat.say("You worked hard today")
         furhat.say("You answered $score out of $questionsAsked correct")
         furhat.say("Well done!")
         delay (900)
+        furhat.gesture(stopSmile)
+        // TODO: ask about other math skill
         furhat.ask("Do you want to practice some more?")
     }
     onResponse<No> { goto(Goodbye) }
