@@ -17,9 +17,13 @@ A process will start that includes a graphical interface witg the furhat bot. Yo
 ### Emotion detection
 To allow us to use all functionalities coming with our conversational agents, we need to first start a piece of software that detects user emotions. This piece of software uses a pre-trained convolutional neural network to allow the recognition and emotion classification of faces on a web server. There are a number of additional dependencies that are required for this webserver to run, namely the below stated libraries.
 
+    python==3.8
     numpy==1.17.4
     opencv-python==4.1.2.30
     tensorflow==2.1.2
+    h5py==2.10.0
+    Keras==2.4.3
+    Keras-Preprocessing==1.1.2
     flask => latest version
 
 You can install these using pip install. To now run the webserver, open the ".../code/CA_emotion_detector" folder and run webserver.py using python3. You can test whether your emotion detection model is set up properly by going to localhost:5000, it should take a snapshot of your webcam input and return the detected affect.
