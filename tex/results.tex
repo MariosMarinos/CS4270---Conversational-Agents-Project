@@ -1,0 +1,59 @@
+A controlled experiment has been performed to evaluate the user's perception of the virtual agent. This section will outline the methodology of this experiment and evaluate its outcome.
+
+\subsection{Methodology}
+\noindent 
+To measure the social presence of the virtual agent, Harms et al. \cite{Alcaiz2004InternalCA} have developed a rigorous questionnaire covering social presence in six sub-dimensions.
+To this end, one participant is recruited to interact with our virtual agent. The recruited participant has to be uninformed and unbiased towards the virtual agent. These requirements are necessary to obtain an objective evaluation of the user's perception, as anything less could affect the outcome of the questionnaire.
+The virtual agent is provided to the participant on a computer set up by one of the researchers. Before the experiment is conducted, the participant has given their consent based on a modified online questionnaire template\footnote{https://www.tudelft.nl/en/about-tu-delft/strategy/integrity-policy/human-research-ethics/template-informed-consent-form/} created by the Human Research Ethics Committee of TU Delft.
+After the participant finishes their interaction with the virtual agent, the previously mentioned questionnaire will be given to the participant to complete.
+
+%To make sure we created an unbiased testing environment, we had to be careful about the recruitment of a participant. We made sure that the participant that would be testing our agent did not have any involvement whatsoever in the process of creating it. This was an important requirement because this not being the case could result in there being a bias towards functionalities of which flaws have been discovered in the development process, which might not be disruptive of the learning environment or show at all. Similarly, it might be the case that the opposite happens to such a participant, their hard work in a component of the system could for instance create a bias towards scoring these components higher. This meant we could not use a team member or a person that is doing or has done the same project. To this end we recruited a close relative of one of our team members to try out our setup.\\
+
+%\noindent For the setup itself we installed our entire software package and asked the participant to go through a conversation with our agent. Afterwards, the participant was asked to fill in a questionnaire. This form is called the "Social Presence Evaluation", and provides a subjective measure to score conversational interactions on various dimensions.
+
+\subsection{Results}
+The table in appendix \ref{appendix:b} shows the questionnaire completed by our participant. The questionnaire uses a seven-point Likert-scale to measure each item. Response levels are mapped to consecutive integers from one to seven, where a score of 4 denotes the neutral middle. An average score per sub-dimension is calculated for further analysis. Questions 7, 8, 11, 12, 17, 18, 21, 22 has their score reversed to account for the negative phrasing in the question. For example, a score of 1 will become a score of 7 for these questions.
+Table \ref{tab:results} shows the average score of each sub-dimension of the questionnaire. 
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Sub-Dimension                        & Formula                           & Score \\ \midrule
+Co-Presence                          & $\frac{6 + 5 + 6 + 5 + 7 + 4}{6}$ & 5.5    \\\addlinespace
+Attentional Allocation               & $\frac{3 + 3 + 6 + 3 + 6 + 4}{6}$ & 4.2    \\\addlinespace
+Perceived Message Understanding      & $\frac{2 + 5 + 5 + 1 + 3 + 1}{6}$ & 2.8    \\\addlinespace
+Perceived Affective Understanding    & $\frac{4 + 2 + 3 + 2 + 2 + 2}{6}$ & 2.5    \\\addlinespace
+Perceived Emotional Interdependence  & $\frac{2 + 1 + 2 + 6 + 2 + 2}{6}$ & 2.5    \\\addlinespace
+Perceived Behavioral Interdependence & $\frac{4 + 5 + 6 + 5 + 5 + 4}{6}$ & 4.8   \\\addlinespace
+\end{tabular}
+\caption{Calculated average score per sub-dimension}
+\label{tab:results}
+\end{table}
+
+The next subsections will give a definition of each sub-dimension as defined in \cite{Alcaiz2004InternalCA}, as well as an interpretation of the measured score for the virtual agent.
+
+\subsubsection{Co-Presence}~\\ %invisible char for line break
+Co-presence is the degree to which the observer believes he/she is not alone and secluded, their level of peripheral or focal awareness of the other, and their sense of the degree to which the other is peripherally or focally aware of them. 
+An average score of 5.5 indicates that the participant agrees that the virtual agent and participant are focally aware of each other and not alone and secluded.
+
+\subsubsection{Attentional Allocation}~\\
+\label{sub:AttentionalAllocation}
+Attentional allocation addresses the amount of attention the user allocates to and receives from an interactant.
+An average score of 4.2 means that the participant feels neutral about the attentional allocation. Looking at each question in this dimension, it seems that the participant got slightly distracted as the virtual agent did not remain focused on the participant. A possible explanation for this will be given in the next subsection. 
+
+\subsubsection{Perceived Message Understanding}~\\
+Perceived message understanding is the ability of the user to understand the message being received from the interactant as well as their perception of the interactant’s level of message understanding.
+The participant gave an average score of 2.8 for this dimension, which is below average. Looking at each individual item in this dimension, the participant was able to understand the virtual agent reasonably well. However, the virtual agent has a lot of trouble understanding the participant. The researchers observed that the speech interpreter sometimes didn't recognize the participant's speech, making the virtual agent ask the participant to repeat what was said. The participant then proceeded to repeat their utterances while the virtual agent was still talking, making the virtual agent unable to listen to their utterances and ask the participant to repeat again. This results in a low score for the virtual agent's level of message understanding. This issue could also explain the perceived loss of attention in subsection \ref{sub:AttentionalAllocation} as it seems the virtual agent is not listening to the participant.
+
+\subsubsection{Perceived Affective Understanding}~\\
+\label{sub:PerceivedAffective}
+Perceived affective understanding is the user’s ability to understand an interactant’s emotional and attitudinal states as well as their perception of the interactant’s ability to understand the user’s emotional and attitudinal states. The score for this dimension is a 2.5, meaning that the participant and virtual agent did not understand each others emotions very well. This indicates that the system responsible for the virtual agent's emotions and its emotion detector did not work as expected.
+
+\subsubsection{Perceived Emotional Interdependence}~\\
+Perceived affective interdependence is the extent to which the user’s emotional and attitudinal state affects and is affected by the emotional and attitudinal states of the interactant. This dimension got an average score of 2.5. The average score is still relatively high because the participant agrees that their mood did influence the interaction for themselves. However, the participant didn't think their emotions and attitudinal state influenced the interaction with the virtual agent at all. As discussed in subsection \ref{sub:PerceivedAffective}, this is likely because the emotional detection system is not working as intended.
+
+\subsubsection{Perceived Behavioral Interdependence}~\\
+Perceived behavioral interdependence is the extent to which the participants behaviour affects and is affected by the interactant’s behavior. 
+An average score of 4.8 means that the participant somewhat agrees to this statement. This score would probably improve if the emotion detection is working as intended, as it could respond better to the users' behavior.
+

@@ -1,106 +1,278 @@
-\documentclass[a4paper]{article}
-
-%%%%%%%% CREATE DOCUMENT STRUCTURE %%%%%%%%
-%% Language and font encodings
+%%
+%% This is file `sample-sigconf.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `sigconf')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%% The first command in your LaTeX source must be the \documentclass command.
+\documentclass[sigconf, nonacm]{acmart}
 \usepackage[english]{babel}
-\usepackage[utf8x]{inputenc}
-\usepackage[T1]{fontenc}
-%\usepackage{subfig}
-
-%% Sets page size and margins
-\usepackage[a4paper,top=3cm,bottom=2cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
-
-%% Useful packages
-\usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage[colorinlistoftodos]{todonotes}
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{sectsty}
-\usepackage{apacite}
+\usepackage{url}
+\usepackage{multicol}
 \usepackage{float}
-\usepackage{titling} 
-\usepackage{blindtext}
-\usepackage[square,sort,comma,numbers]{natbib}
-\usepackage[colorinlistoftodos]{todonotes}
-\usepackage{xcolor}
-\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
 
-%%%%%%%% DOCUMENT %%%%%%%%
+% Table preamble
+\usepackage{geometry}
+\usepackage{changepage} % allows for temporary adjustment of side margins
+\usepackage{xtab, array, booktabs, caption, ragged2e, lscape, threeparttablex}
+% Redefine geometry commands
+\makeatletter
+\def\ifGm@preamble#1{\@firstofone}
+\appto\restoregeometry{%
+  \pdfpagewidth=\paperwidth
+  \pdfpageheight=\paperheight}
+\apptocmd\newgeometry{%
+  \pdfpagewidth=\paperwidth
+  \pdfpageheight=\paperheight}{}{}
+\makeatother
+
+
+%% NOTE that a single column version may be required for 
+%% submission and peer review. This can be done by changing
+%% the \doucmentclass[...]{acmart} in this template to 
+%% \documentclass[manuscript,screen]{acmart}
+%% 
+%% To ensure 100% compatibility, please check the white list of
+%% approved LaTeX packages to be used with the Master Article Template at
+%% https://www.acm.org/publications/taps/whitelist-of-latex-packages 
+%% before creating your document. The white list page provides 
+%% information on how to submit additional LaTeX packages for 
+%% review and adoption.
+%% Fonts used in the template cannot be substituted; margin 
+%% adjustments are not allowed.
+%%
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+\setcopyright{acmcopyright}
+\copyrightyear{2020}
+\acmYear{2020}
+
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+%%\acmSubmissionID{123-A56-BU3}
+
+%%
+%% The majority of ACM publications use numbered citations and
+%% references.  The command \citestyle{authoryear} switches to the
+%% "author year" style.
+%%
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+%%\citestyle{acmauthoryear}
+
+%%
+%% end of the preamble, start of the body of the document source.
 \begin{document}
 
-%%%% Title Page
-\begin{titlepage}
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title{A Conversational Agent for Math Tutoring}
 
-\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 							% horizontal line and its thickness
-\center 
- 
-% University
-\textsc{\LARGE Delft University of Technology}\\[1cm]
+%%
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+%% Of note is the shared affiliation of the first two authors, and the
+%% "authornote" and "authornotemark" commands
+%% used to denote shared contribution to the research.
+\author{Justin de Haan}
+%\authornote{Both authors contributed equally to this research.}
+\email{4623584}
+\affiliation{%
+  \institution{Delft University of Technology}
+  \streetaddress{P.O. Box 1212}
+  \city{Delft}
+  \state{Zuid-Holland}
+  \country{the Netherlands}
+  \postcode{PO Box 5 2600 AA}
+}
 
-% Document info
-\textsc{\Large Conversational Agents}\\[0.2cm]
-\textsc{\large CS4270}\\[1cm] 										% Course Code
-\HRule \\[0.8cm]
-{ \huge \bfseries Math Tutoring Project}\\[0.7cm]								% Assignment
-\HRule \\[2cm]
-\large
-\emph{Authors:}\\[0.5cm]
-Justin de Haan (0000000)\\[0cm]
-Marios Marinos (0000000)\\[0cm]
-Tim Polderdijk (0000000)\\[0cm]
-Ynze ter Horst (4701682)\\[0.5cm]
-{\large \today}\\[5cm]
-\includegraphics[width=0.6\textwidth]{images/TU_delft_logo.jpg}\\[1cm] 	% University logo
-\vfill 
-\end{titlepage}
+\author{Ynze ter Horst}
+\email{4701682}
+\affiliation{%
+  \institution{Delft University of Technology}
+  \streetaddress{P.O. Box 1212}
+  \city{Delft}
+  \state{Zuid-Holland}
+  \country{the Netherlands}
+  \postcode{PO Box 5 2600 AA}
+}
 
-%%\begin{abstract}
-%%Your abstract.
-%%\end{abstract}
+\author{Marios Marinos}
+\email{5353106}
+\affiliation{%
+  \institution{Delft University of Technology}
+  \streetaddress{P.O. Box 1212}
+  \city{Delft}
+  \state{Zuid-Holland}
+  \country{the Netherlands}
+  \postcode{PO Box 5 2600 AA}
+}
 
-%%%% SECTIONS
-%% Section 1
-\section*{Introduction}
+\author{Tim Polderdijk}
+\email{4689313}
+\affiliation{%
+  \institution{Delft University of Technology}
+  \streetaddress{P.O. Box 1212}
+  \city{Delft}
+  \state{Zuid-Holland}
+  \country{the Netherlands}
+  \postcode{PO Box 5 2600 AA}
+}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+  Numerous studies have been conducted to research learning environments. In this paper a conversational agent is introduced, which uses a range of techniques to automate and improve the learning experience of math students. The robot has functionalities to explain, train and test students to perform a rudimentary math skill. It also incorporates an emotion classifier to decide on an approach given the affective behaviour of the user.
+\end{abstract}
+
+%%
+%% The code below is generated by the tool at http://dl.acm.org/ccs.cfm.
+%% Please copy and paste the code instead of the example below.
+%%
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10003456.10003457.10003527</concept_id>
+<concept_desc>Social and professional topics~Computing education</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10010405.10010489.10010495</concept_id>
+<concept_desc>Applied computing~E-learning</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Social and professional topics~Computing education}
+\ccsdesc[500]{Applied computing~E-learning}
+
+%%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+\keywords{conversational agent, e-learning, emotion detection}
+
+%% A "teaser" image appears between the author and affiliation
+%% information and the body of the document, and typically spans the
+%% page.
+\begin{teaserfigure}
+  \includegraphics[width=\textwidth]{images/TU_delft_logo.jpg}
+\end{teaserfigure}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+
+\section{Introduction}
 \input{tex/introduction.tex}
 %% What is this report about? What are you trying to achieve?
 
-\section*{Motivation}
+\section{Motivation}
+\input{tex/motivation.tex}
 %% Why does it make sense to create socially-aware dialog
 %% systems? Where are possible application areas? (Please
 %% include literature references here)
 
-\section*{Implementation}
+\section{Implementation}
+\input{tex/implementation.tex}
 %% Data: Which data did you use in your implementation?
 %% System -Architecture: How does your system architecture look like? Give reasons for the choices you made?
 
-\section*{Results}
+\section{Evaluation}
+\input{tex/results.tex}
 %% Present your Questionnaire results here
 
-
-\section*{Discussion}
+\section{Discussion}
+\input{tex/discussion.tex}
 %% Limitations
 %% a. What did not work and why do you think that is? 
 %% b. What are the strengths of your system and where are the weaknesses.
 
-\section*{Conclusion}
+\section{Conclusion}
+\input{tex/conclusion.tex}
 %% Summarize your results and give suggestions for future work
 
+%%
+%% The acknowledgments section is defined using the "acks" environment
+%% (and NOT an unnumbered section). This ensures the proper
+%% identification of the section in the article metadata, and the
+%% consistent spelling of the heading.
+\begin{acks}
+% To Robert, for the bagels and explaining CMYK and color spaces.
+\end{acks}
+
+%%
+%% The next two lines define the bibliography style to be used, and
+%% the bibliography file.
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{ref}
+
+%%
+%% If your work has an appendix, this is the place to put it.
 
 
+\onecolumn
+\appendix
+\section{Diagram of explanation state}
+\label{appendix:a}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{images/StateDiagram.png}
+\caption{Diagram of state Explanation 1.}
+\label{fig:State}
+\end{figure}
 
-%%%%%%%% EXTRA TIPS %%%%%%%%
-%% hou deze structuur aan voor afbeeldingen
-%%\begin{figure}[H]
-%%\includegraphics[]{Pendulum.jpg}
-%%\caption{Sketch of the pendulum}
-%%\label{fig:pendulum}
-%%\end{figure}
+\newpage
+\section{Dialogue flow}
+\label{appendix:b}
+\begin{figure*}[h]
+\includegraphics[width=\linewidth, height=0.9\textheight]{images/DialogFlow.png}
+\caption{Dialog flow of the math skill tutorial}
 
+\end{figure*}
 
-%%\newpage
-%%\bibliographystyle{apacite}
-%%\bibliography{sample}
+\input{tex/evaluationtable}
+% \subsection{Part One}
+% \subsection{Part Two}
+% \section{Online Resources}
+
 
 \end{document}
+\endinput
