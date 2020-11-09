@@ -16,8 +16,10 @@ class Confused : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf(
                 "Who are you?",
+                "What is your name?",
                 "What can you do?",
-                "What is this?")
+                "What is this?",
+                "Huh?")
     }
 }
 
@@ -27,6 +29,8 @@ class Yes : Intent() {
                 "Yes",
                 "Sure",
                 "Yeah",
+                "Great",
+                "Alright",
                 "Okay",
                 "Yes, please")
     }
@@ -65,6 +69,8 @@ class Help : Intent() {
                 "Help",
                 "Can you explain it to me?",
                 "Can I get an explanation?",
+                "I don't know how to calculate",
+                "I can't calculate",
                 "Explanation")
     }
 }
