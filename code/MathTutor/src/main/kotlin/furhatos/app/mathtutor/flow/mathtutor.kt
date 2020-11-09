@@ -1,9 +1,10 @@
 package furhatos.app.mathtutor.flow
 
 import furhatos.app.mathtutor.nlu.*
-import furhatos.flow.kotlin.*
-import furhatos.flow.kotlin.voice.Voice
-import furhatos.records.Location
+import furhatos.flow.kotlin.State
+import furhatos.flow.kotlin.furhat
+import furhatos.flow.kotlin.onResponse
+import furhatos.flow.kotlin.state
 
 
 val Start = state(Interaction) {
@@ -90,8 +91,6 @@ fun EmotionSeenEncouragment(emotion: String)  = state {
                 + "I know that you are surprised about percentages,it's rational as you see it for first time but wait for my explanation!"
                 + "Oh, I can see you are surprised. Be patient for my explanation and you will get it."
             }}
-            // TODO : If Neutral say what? Also, neutral going to exist a lot of times because
-            // TODO : when we don't recognize faces we put neutral.
             "Neutral" -> {terminate()}
         }
         terminate()
@@ -122,7 +121,6 @@ val requestBreak : State = state(Interaction) {
 
 
 val Goodbye : State = state(Interaction) {
-    // TODO: wave user goodbye
     onEntry {
         furhat.gesture(indefiniteBigSmile)
         furhat.say {

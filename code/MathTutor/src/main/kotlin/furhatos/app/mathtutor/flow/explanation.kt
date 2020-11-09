@@ -10,9 +10,6 @@ import furhatos.gestures.Gestures
 import furhatos.nlu.common.DontKnow
 import furhatos.records.Location
 
-// TODO: add conditional for division / percentage explanation to each state in this file
-// TODO: add a user counter for how many times things has been repeated. Switch to different explanation if repeated too much
-// TODO: make the robot speak slower, (if i was the student it would be talking too fast imo, idk if this is something we can change in our code, or in the furhat sdk server)
 
 // function to generate a random location for the robot to look to when "A-gazing" (not looking at the user).
 fun randomLookAway() : Location {

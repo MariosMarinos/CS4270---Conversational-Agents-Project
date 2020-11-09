@@ -1,12 +1,7 @@
 package furhatos.app.mathtutor.flow
 
-import furhatos.flow.kotlin.furhat
-import furhatos.flow.kotlin.onUserLeave
-import furhatos.flow.kotlin.state
-
 import furhatos.flow.kotlin.*
 import furhatos.flow.kotlin.voice.PollyNeuralVoice
-import furhatos.util.Language
 
 val Idle : State = state {
     /*

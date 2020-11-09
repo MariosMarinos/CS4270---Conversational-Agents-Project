@@ -11,7 +11,6 @@ import furhatos.records.Location
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-// TODO : Use callEmotion from explanation to make the encouragments better according to emotion.
 
 // Custom data class consisting of a question and answer, since Kotlin can't return a tuple.
 data class ExerciseTuple(val question: String, val percentage : Int, val Value : Int, val answer: Int)
@@ -46,8 +45,6 @@ val AskExercise: State = state(Interaction) {
                 reentry()
             }
             onResponse<Help> {
-                println("user requested help, starting explanation ")
-                // call emotion encouragment.
                 callEmotion()
                 //TODO nod at user? requires get location of user which i cant find
                 furhat.voice.rate = 0.9
@@ -130,7 +127,6 @@ val AskExercise: State = state(Interaction) {
             val emotion = Request()
             // if the user is sad, fearful or surprised encourage the student.
 
-            // TODO : ask if the student want to retry the exercise.
             if (emotion == "Sad" || emotion == "Fearful" || emotion == "Surprised") EmotionSeenEncouragment(emotion)
             furhat.gesture(stopSmile)
             furhat.say("Unfortunately this answer is wrong. The correct answer was $answer")
@@ -153,7 +149,6 @@ fun exerciseExplanation(percentage : Int, value: Int)  = state {
         furhat.attend(Location(0.0, -0.3, 1.5))
         furhat.voice.rate = 0.7
         furhat.say("10% of $value is the same as $value divided by 10. In our case this results in ${value/10}.")
-        // TODO: adjust for other remainders than 5. Not necessary if we do not create these percentages anyway
         if (percentageRemainder > 0) {furhat.say("5% is half of 10%. 5% of $value will give a value of ${value/20}")}
         furhat.say("To get to ${percentageDividedByTen * 10}%, " +
                 "we would need to multiply ${value / 10} by $percentageDividedByTen.")
@@ -181,7 +176,6 @@ fun exerciseExplanation(percentage : Int, value: Int)  = state {
 
 
 val ExerciseSummary : State = state {
-    println("now in ExerciseSummary state")
     onEntry {
         val score = users.current.score
         val questionsAsked = users.current.questionsAsked
@@ -193,7 +187,6 @@ val ExerciseSummary : State = state {
         furhat.say("Well done!")
         delay (900)
         furhat.gesture(stopSmile)
-        // TODO: ask about other math skill
         furhat.ask("Do you want to practice some more?")
     }
     onResponse<No> { goto(Goodbye) }
@@ -207,7 +200,6 @@ val ExerciseSummary : State = state {
 
 // Generates a question using a random percentage between 5 and 95, and a value between 10 and 100
 fun getRandomExercise(): ExerciseTuple {
-    // TODO: if difficulty is easy, only give answers that results in nice integers
     val randomPercentage = (1..19).random() // random number between 1 and 19
     val percentage: Int = randomPercentage * 5 // scale random percentage from 5 to 95
     val randomValue: Int = (1..10).random()
